@@ -1,0 +1,15 @@
+{
+  "devDependencies": {
+    "@playwright/test": "^1.54.2",
+    "@types/node": "^24.2.0",
+    "playwright": "^1.54.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
+  },
+  "scripts": {
+    "test": "playwright test src/tests",
+    "test:headed": "playwright test src/tests --headed",
+    "test:debug": "playwright test src/tests --debug",
+    "test:report": "playwright show-report"
+  }
+}
