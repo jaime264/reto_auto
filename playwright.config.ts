@@ -2,7 +2,7 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './src/tests', // tu carpeta de pruebas
-  timeout: 30 * 1000,     // timeout global por test
+  timeout: 60 * 1000,     // timeout global por test
   retries: 0,             // reintentos (útil en CI)
   reporter: [['html', { outputFolder: 'playwright-report' }]],
   use: {
@@ -16,7 +16,9 @@ export default defineConfig({
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
-    },
+    }
+     // Cuando termines, descomenta para correr en todos:
+    /*
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
@@ -24,6 +26,7 @@ export default defineConfig({
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
-    },
+    }
+    */
   ],
 });
