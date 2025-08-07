@@ -8,6 +8,8 @@ import { SelectLocation } from '../screenplay/tasks/SelectLocation';
 import { AcceptCookies } from '../screenplay/tasks/AcceptCookies';
 import { clearSession } from '../screenplay/utils/clearSession';
 import { CloseOfferDrawer } from '../screenplay/tasks/CloseOfferDrawer';
+import { GoToCart } from '../screenplay/tasks/GoToCart';
+import { ValidateCart } from '../screenplay/tasks/ValidateCart';
 
 // Test principal
 
@@ -58,8 +60,15 @@ test('Agregar 5 productos aleatorios al carrito', async ({ page }) => {
     addedProducts.push(product);
   }
 
+
   console.log('\n✅ Productos agregados al carrito:');
   for (const p of addedProducts) {
     console.log(`- ${p.name} | Precio: $${p.price} | Cantidad: ${p.quantity}`);
   }
+
+  await GoToCart.performAs(page);
+
+  await page.waitForTimeout(3000);
+
+  await ValidateCart.performAs(page, addedProducts);
 });

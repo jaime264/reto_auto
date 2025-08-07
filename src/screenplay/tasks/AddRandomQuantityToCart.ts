@@ -1,5 +1,7 @@
 import { Page, expect } from '@playwright/test';
 import { Product } from '../models/Product';
+import { parsePrice } from '../utils/parsePrice';
+
 
 export class AddRandomQuantityToCart {
   static async performAs(page: Page): Promise<Product> {
@@ -27,7 +29,7 @@ export class AddRandomQuantityToCart {
     // Capturar precio y convertirlo a number
     const priceLocator = page.locator('[data-fs-container-price-otros]');
     const priceText = (await priceLocator.first().textContent()) ?? '$0';
-    const price = parseFloat(priceText.replace(/[^\d.]/g, ''));
+    const price = parsePrice(priceText);
 
     // Hacer clic en "Agregar al carrito"
     const addButton = page.locator('#container-buybutton button span', { hasText: 'Agregar' });
@@ -62,12 +64,20 @@ export class AddRandomQuantityToCart {
     }
 
     // Generar cantidad aleatoria y asignarla
-    const quantity = Math.floor(Math.random() * maxQuantity) + 1;
+    let quantity = Math.floor(Math.random() * maxQuantity) + 1;
     const plusButton = page.locator('#container-buybutton').locator('button:has(use[href*="icon-outlined-more_mas_agregar_selector"])');
     for (let i = 1; i < quantity; i++) {
       await plusButton.click();
       await page.waitForTimeout(200); // evitar click demasiado rápido
     }
+
+    
+    // 3. Obtener valor final desde el input visible
+    const quantityInput = page.locator('[data-fs-container-buybutton="true"] input');
+    const inputValue = await quantityInput.inputValue();
+
+    // 4. Asignar valor exacto como número
+    quantity = parseInt(inputValue.trim(), 10);
 
 
     return {
