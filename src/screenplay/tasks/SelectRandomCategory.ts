@@ -23,7 +23,14 @@ export async function SelectRandomCategory(page: Page) {
 
   // 5) Seleccionar aleatoriamente una categoría
   const idx = Math.floor(Math.random() * total);
-  await categoryItems.nth(idx).click();
+  const selectedCategory = categoryItems.nth(idx);
+
+  // Obtener texto de la categoría
+  const categoryText = await selectedCategory.innerText();
+  console.log(`🌍 Categoría seleccionada: ${categoryText.trim()}`);
+
+  // Hacer clic
+  await selectedCategory.click();
 
   
   // 6) Esperar a que se abra el submenú correspondiente

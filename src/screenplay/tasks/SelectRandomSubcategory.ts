@@ -1,13 +1,10 @@
 import { Page, expect } from '@playwright/test';
 
 export class SelectRandomSubcategory {
-  static async performAs(page: Page) {
-    // El submenú aparece con data-isopen="true". Dentro hay listas de subcategorías.
-    // Esperamos un contenedor que tenga ul[data-content-list="true"]
+  static async performAs(page: Page): Promise<boolean> {
     const subMenu = page.locator('div[data-isopen="true"]');
     await subMenu.waitFor({ state: 'visible', timeout: 10000 });
 
-    // Dentro del submenú, las subcategorías están en ul[data-content-list="true"] li a
     const subcategoryLinks = subMenu.locator('ul[data-content-list="true"] li a:visible');
     await subcategoryLinks.first().waitFor({ state: 'visible', timeout: 10000 });
 
@@ -18,14 +15,22 @@ export class SelectRandomSubcategory {
     const chosen = subcategoryLinks.nth(pick);
 
     const subName = (await chosen.innerText()).trim();
-    console.log(`Subcategoría seleccionada: ${subName}`);
+    console.log(`📌 Subcategoría seleccionada: ${subName}`);
 
-    await chosen.click();
+    await Promise.all([
+      page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 15000 }),
+      chosen.click(),
+    ]);
 
-    // Validar que navegamos a un listado (hay productos)
-    await page.waitForLoadState('domcontentloaded');
-    // Heurística simple: que exista una grilla/listado de productos
-    const productsGrid = page.locator('[data-fs-product-grid], [data-fs-product-summary], [data-testid="product-summary"], section:has([data-fs-product-card])');
-    await expect(productsGrid.first()).toBeVisible({ timeout: 15000 });
+    // Validar si hay productos en la grilla
+    const products = page.locator('[data-fs-product-grid] a[data-testid="product-link"]');
+
+    try {
+      await expect(products.first()).toBeVisible({ timeout: 5000 });
+      return true;
+    } catch {
+      console.warn('⚠️ No se encontraron productos en la subcategoría seleccionada.');
+      return false;
+    }
   }
 }
