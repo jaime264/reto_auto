@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'node22' 
+        nodejs 'node22'
     }
 
     environment {
@@ -10,6 +10,12 @@ pipeline {
     }
 
     stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/jaime264/reto_auto.git'
+            }
+        }
+
         stage('Instalar dependencias') {
             steps {
                 sh 'npm ci'
@@ -18,34 +24,33 @@ pipeline {
 
         stage('Ejecutar Pruebas') {
             steps {
+                // Asegura que se instalen los navegadores
                 sh 'npx playwright install'
-                sh 'npx playwright test --reporter=html'
-            }
-        }
 
-        stage('Publicar Reporte') {
-            steps {
-                publishHTML(target: [
-                    allowMissing: true,
-                    alwaysLinkToLastBuild: true,
-                    keepAll: true,
-                    reportDir: "${REPORT_DIR}",
-                    reportFiles: 'index.html',
-                    reportName: 'Playwright Report'
-                ])
-            }
-        }
-
-        stage('Limpiar') {
-            steps {
-                cleanWs()
+                // Ejecuta las pruebas y no falla el pipeline automáticamente
+                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                    sh 'npx playwright test --reporter=html'
+                }
             }
         }
     }
 
     post {
         always {
-            archiveArtifacts artifacts: 'playwright-report/**/*.html, reports/**/*.mp4, reports/**/*.png', allowEmptyArchive: true
+            echo "🔁 Ejecutando acciones post pipeline..."
+
+            // Publicar el HTML generado por Playwright
+            publishHTML([
+                reportDir: "${REPORT_DIR}",
+                reportFiles: 'index.html',
+                reportName: 'Playwright Report',
+                keepAll: true,
+                allowMissing: true,
+                alwaysLinkToLastBuild: true
+            ])
+
+            // Limpia el workspace sin importar si falló o no
+            cleanWs()
         }
     }
 }
