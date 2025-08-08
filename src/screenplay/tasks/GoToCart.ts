@@ -16,7 +16,7 @@ export class GoToCart {
     const goToCartBtn = miniCartModal.getByText('Ver carrito/ Ir a pagar', { exact: true });
 
     await goToCartBtn.click();
-    console.log('✅ Se hizo clic en "Ver carrito/ Ir a pagar"');
+    console.log('Se hizo clic en "Ver carrito/ Ir a pagar"');
 
     // Esperar la navegación a la vista del carrito
     await page.getByRole('heading', { name: 'Carrito de compras' }).waitFor({ timeout: 10000 });
@@ -25,7 +25,7 @@ export class GoToCart {
     const closeCartModalBtn = page.locator('[data-molecule-modal-close-button-container="true"] button');
     if (await closeCartModalBtn.isVisible().catch(() => false)) {
       await closeCartModalBtn.click();
-      console.log('🧹 Modal del carrito cerrado');
+      console.log('Modal del carrito cerrado');
     }
   }
 }

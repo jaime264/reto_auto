@@ -13,7 +13,7 @@ export class AddRandomQuantityToCart {
       const closeDrawerBtn = drawer.locator('[data-fs-drawer-close-button="true"]');
       if (await closeDrawerBtn.isVisible({ timeout: 3000 }).catch(() => false)) {
         await closeDrawerBtn.dispatchEvent('click');
-        console.log('❌ Modal de recomendación cerrado');
+        console.log('Modal de recomendación cerrado');
       }
     }
 

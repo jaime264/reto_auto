@@ -15,7 +15,7 @@ export const SelectRandomSubcategory = {
     const chosen = subcategoryLinks.nth(pick);
 
     const subName = (await chosen.innerText()).trim();
-    console.log(`📌 Subcategoría seleccionada: ${subName}`);
+    console.log(`Subcategoría seleccionada: ${subName}`);
 
     await Promise.all([
       page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 15000 }),

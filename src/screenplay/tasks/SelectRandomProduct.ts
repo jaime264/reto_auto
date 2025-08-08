@@ -16,14 +16,14 @@ export class SelectRandomProduct {
     const selected = products.nth(random);
     const href = await selected.getAttribute('href');
 
-    console.log(`🍭 Producto seleccionado: ${href}`);
+    console.log(`Producto seleccionado: ${href}`);
 
     await selected.click();
 
     // Verificar si aparece el error 404
     const notFound = await IsProductNotFound.answeredBy(page);
     if (notFound) {
-      console.warn('⚠️ Producto no disponible (404). Se omite.');
+      console.warn('Producto no disponible (404). Se omite.');
       return false;
     }
 

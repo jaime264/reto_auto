@@ -35,6 +35,6 @@ export class SelectLocation {
     await confirmButton.click();
 
     await page.waitForTimeout(3000); // esperar a que se cierre el modal
-    console.log('✅ Ciudad y tienda seleccionadas correctamente');
+    console.log('Ciudad y tienda seleccionadas correctamente');
   }
 }

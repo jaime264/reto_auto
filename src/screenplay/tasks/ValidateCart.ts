@@ -5,7 +5,7 @@ import { CartItem } from '../models/CartItem';
 
 export class ValidateCart {
   static async performAs(page: Page, addedProducts: Product[]) {
-    console.log('\n🧪 Validando productos en el carrito...');
+    console.log('\n Validando productos en el carrito...');
 
     // Obtener datos del carrito
     const names = await page.locator('[data-molecule-product-detail-name-span="true"]').allTextContents();
@@ -29,7 +29,7 @@ export class ValidateCart {
       const expected = sortedAddedProducts[i];
       const actual = sortedCartItems[i];
 
-      console.log(`\n🔍 Validando producto #${i + 1}`);
+      console.log(`\n Validando producto #${i + 1}`);
       console.log(`Esperado: ${expected.name} | Precio: ${expected.price} | Cantidad: ${expected.quantity}`);
       console.log(`En carrito: ${actual.name} | Precio Total: ${actual.price} | Cantidad: ${actual.quantity}`);
 
@@ -45,6 +45,6 @@ export class ValidateCart {
       expect(actualSubtotal).toBeCloseTo(expectedSubtotal, 0); // tolerancia de 0 decimales
     }
 
-    console.log('\n✅ Todos los productos del carrito fueron validados correctamente.');
+    console.log('\n Todos los productos del carrito fueron validados correctamente.');
   }
 }

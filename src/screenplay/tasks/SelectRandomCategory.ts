@@ -26,7 +26,7 @@ export const SelectRandomCategory = {
 
     // Obtener texto de la categoría
     const categoryText = await selectedCategory.innerText();
-    console.log(`🌍 Categoría seleccionada: ${categoryText.trim()}`);
+    console.log(`Categoría seleccionada: ${categoryText.trim()}`);
 
     // Hacer clic
     await selectedCategory.click();
