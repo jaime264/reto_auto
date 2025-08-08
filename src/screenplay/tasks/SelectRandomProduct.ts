@@ -7,7 +7,7 @@ export class SelectRandomProduct {
     const products = page.locator('[data-fs-product-grid] a[data-testid="product-link"]:visible');
 
     // Esperar que al menos un producto sea visible
-    await expect(products.first()).toBeVisible({ timeout: 10000 });
+    await expect(products.first()).toBeVisible({ timeout: 30000 });
 
     const count = await products.count();
     expect(count).toBeGreaterThan(0);

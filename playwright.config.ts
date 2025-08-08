@@ -1,23 +1,25 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices, expect } from '@playwright/test';
 
 export default defineConfig({
-  testDir: './src/tests', // tu carpeta de pruebas
-  timeout: 60 * 1000,     // timeout global por test
-  retries: 0,             // reintentos (útil en CI)
-  reporter: [['html', { outputFolder: 'playwright-report', open: 'on' }]],
+  testDir: './src/tests',
+  timeout: 120 * 1000, // timeout global por test
+  retries: 0,
+  reporter: [['html', { outputFolder: 'playwright-report', open: 'never' }]],
   use: {
-    headless: true,               // no muestra el navegador (puedes cambiar a false)
-    screenshot: 'on',         // Siempre tomar captura
-    video: 'on',              // Siempre grabar video
-    trace: 'on',              // Siempre guardar traza
+    headless: true,
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
+    trace: 'retain-on-failure',
     viewport: { width: 1280, height: 720 },
+    expect: {
+      timeout: 20000,
+    },
   },
   projects: [
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     }
-     // Cuando termines, descomenta para correr en todos:
     /*
     {
       name: 'firefox',

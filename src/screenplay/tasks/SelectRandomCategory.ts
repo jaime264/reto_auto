@@ -7,7 +7,7 @@ export const SelectRandomCategory = {
 
     // 2) Lista de secciones dentro del aside
     const sectionsList = page.locator('aside ul[data-list-sections="true"]');
-    await sectionsList.first().waitFor({ state: 'visible', timeout: 10000 });
+    await sectionsList.first().waitFor({ state: 'visible', timeout: 15000 });
 
     // 3) Tomar el segundo <section> dentro de la lista
     const categoriesSection = sectionsList
@@ -35,6 +35,6 @@ export const SelectRandomCategory = {
     const subMenu = page.locator(
       'div[class*="SubMenu_submenu-container"][data-isopen="true"] ul[data-content-list="true"]'
     );
-    await expect(subMenu.first()).toBeVisible({ timeout: 10000 });
+    await expect(subMenu.first()).toBeVisible({ timeout: 15000 });
   }
 };

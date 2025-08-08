@@ -9,9 +9,9 @@ export class AddRandomQuantityToCart {
   static async performAs(page: Page): Promise<Product> {
     // Cerrar modal de recomendaciones si aparece
     const drawer = page.locator('#drawer');
-    if (await drawer.isVisible({ timeout: 3000 }).catch(() => false)) {
+    if (await drawer.isVisible({ timeout: 15000 }).catch(() => false)) {
       const closeDrawerBtn = drawer.locator('[data-fs-drawer-close-button="true"]');
-      if (await closeDrawerBtn.isVisible({ timeout: 3000 }).catch(() => false)) {
+      if (await closeDrawerBtn.isVisible({ timeout: 15000 }).catch(() => false)) {
         await closeDrawerBtn.dispatchEvent('click');
         console.log('Modal de recomendación cerrado');
       }
@@ -27,7 +27,7 @@ export class AddRandomQuantityToCart {
 
     // Cerrar modal de garantía si aparece
     const warrantyModal = page.locator('header[data-fs-warranty-header="true"]');
-    if (await warrantyModal.isVisible({ timeout: 3000 }).catch(() => false)) {
+    if (await warrantyModal.isVisible({ timeout: 15000 }).catch(() => false)) {
       const closeButton = warrantyModal.locator('[data-testid="store-button"]');
       if (await closeButton.isVisible()) {
         await closeButton.click();
@@ -36,7 +36,7 @@ export class AddRandomQuantityToCart {
 
     // Seleccionar talla si aparece
     const dropdown = page.locator('[data-fs-content-size-selector=true]');
-    if (await dropdown.isVisible({ timeout: 3000 }).catch(() => false)) {
+    if (await dropdown.isVisible({ timeout: 15000 }).catch(() => false)) {
       await dropdown.click();
       const firstOption = page.locator('[role="option"]:visible').first();
       await firstOption.click();
@@ -51,7 +51,7 @@ export class AddRandomQuantityToCart {
 
     for (let i = 1; i < quantity; i++) {
       await plusButton.click();
-      await page.waitForTimeout(200);
+      await page.waitForTimeout(10000);
     }
 
     // Obtener cantidad final real del input

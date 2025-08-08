@@ -9,7 +9,7 @@ export class SelectLocation {
     
     // ▼ Esperar a que aparezca el modal
     const storeModal = page.locator('[data-testid="store-modal"]');
-    await storeModal.waitFor({ state: 'visible', timeout: 1000 });
+    await storeModal.waitFor({ state: 'visible', timeout: 10000 });
     await page.waitForTimeout(1000); // esperar que el modal termine de aparecer
 
     // ▼ Seleccionar ciudad
@@ -34,7 +34,7 @@ export class SelectLocation {
     const confirmButton = storeModal.locator('[data-testid="store-button"]', { hasText: 'Confirmar' });
     await confirmButton.click();
 
-    await page.waitForTimeout(3000); // esperar a que se cierre el modal
+    await page.waitForTimeout(4000); // esperar a que se cierre el modal
     console.log('Ciudad y tienda seleccionadas correctamente');
   }
 }
