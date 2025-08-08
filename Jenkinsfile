@@ -10,12 +10,6 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/jaime264/reto_auto.git'
-            }
-        }
-
         stage('Instalar dependencias') {
             steps {
                 sh 'npm ci'
