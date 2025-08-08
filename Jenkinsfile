@@ -22,7 +22,6 @@ pipeline {
                 echo '🧪 Ejecutando pruebas...'
                 script {
                     try {
-                        sh 'npx playwright install-deps'
                         sh 'npx playwright test --reporter=html'
                         sh 'npx playwright show-report --output=playwright-report --quiet'
                     } catch (err) {
