@@ -1,6 +1,6 @@
 import { Page } from '@playwright/test';
 
-export class Safe {
+export class secure {
   static async attempt<T>(
     action: () => Promise<T>,
     context: string = 'acción',

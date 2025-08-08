@@ -12,7 +12,7 @@ import { ValidateCart } from '../screenplay/tasks/ValidateCart';
 import { clearSession } from '../screenplay/utils/clearSession';
 import { Product } from '../screenplay/models/Product';
 import { HasVisibleProducts } from '../screenplay/questions/HasVisibleProducts';
-import { Safe } from '../screenplay/utils/Safe';
+import { secure } from '../screenplay/utils/secure';
 
 test('Agregar 5 productos aleatorios al carrito', async ({ page }) => {
   const shopper = new Shopper(page);
@@ -30,7 +30,7 @@ test('Agregar 5 productos aleatorios al carrito', async ({ page }) => {
   while (addedProducts.length < 5) {
     console.log(`\n🛒 Producto ${addedProducts.length + 1}`);
 
-    const success = await Safe.attempt(async () => {
+    const success = await secure.attempt(async () => {
     await shopper.attemptsTo(SelectRandomCategory);
     await shopper.attemptsTo(SelectRandomSubcategory);
 
@@ -59,6 +59,6 @@ test('Agregar 5 productos aleatorios al carrito', async ({ page }) => {
 
   await shopper.attemptsTo(GoToCart);
   await page.waitForTimeout(3000);
-  await Safe.attempt(() => ValidateCart.performAs(page, addedProducts), 'Validar carrito', page);
+  await secure.attempt(() => ValidateCart.performAs(page, addedProducts), 'Validar carrito', page);
 
 });
