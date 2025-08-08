@@ -12,12 +12,6 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/jaime264/reto_auto.git'
-            }
-        }
-
         stage('Instalar dependencias') {
             steps {
                 sh 'npm ci'
@@ -26,7 +20,7 @@ pipeline {
 
         stage('Ejecutar Pruebas') {
             steps {
-                sh 'npx playwright install'  // 👈 Asegura navegadores en el entorno Jenkins
+                sh 'npx playwright install'
                 sh 'npx playwright test --reporter=html'
             }
         }
