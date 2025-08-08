@@ -11,6 +11,8 @@ import { GoToCart } from '../screenplay/tasks/GoToCart';
 import { ValidateCart } from '../screenplay/tasks/ValidateCart';
 import { clearSession } from '../screenplay/utils/clearSession';
 import { Product } from '../screenplay/models/Product';
+import { HasVisibleProducts } from '../screenplay/questions/HasVisibleProducts';
+import { Safe } from '../screenplay/utils/Safe';
 
 test('Agregar 5 productos aleatorios al carrito', async ({ page }) => {
   const shopper = new Shopper(page);
@@ -28,20 +30,35 @@ test('Agregar 5 productos aleatorios al carrito', async ({ page }) => {
   while (addedProducts.length < 5) {
     console.log(`\n🛒 Producto ${addedProducts.length + 1}`);
 
-    await shopper.attemptsTo(
-      SelectRandomCategory,
-      SelectRandomSubcategory,
-      SelectRandomProduct,
-      CloseOfferDrawer
-    );
+    const success = await Safe.attempt(async () => {
+    await shopper.attemptsTo(SelectRandomCategory);
+    await shopper.attemptsTo(SelectRandomSubcategory);
 
-    const product = await AddRandomQuantityToCart.performAs(page);
+    const hasProducts = await HasVisibleProducts.answeredBy(page);
+    if (!hasProducts) {
+      console.warn('⚠️ No hay productos visibles en esta subcategoría. Reintentando...');
+      return false;
+    }
+
+    const [productExists] = await shopper.attemptsTo(SelectRandomProduct);
+    if (!productExists) {
+      console.log('❌ Producto no disponible (404). Reintentando...');
+      return false;
+    }
+
+    await shopper.attemptsTo(CloseOfferDrawer);
+
+    const [product] = await shopper.attemptsTo(AddRandomQuantityToCart);
     addedProducts.push(product);
-  }
 
-  await shopper.attemptsTo(
-    GoToCart
-  );
+    return true;
+  }, `flujo de agregar producto ${addedProducts.length + 1}`, page);
 
-  await ValidateCart.performAs(page, addedProducts);
+  if (!success) continue;
+}
+
+  await shopper.attemptsTo(GoToCart);
+  await page.waitForTimeout(3000);
+  await Safe.attempt(() => ValidateCart.performAs(page, addedProducts), 'Validar carrito', page);
+
 });

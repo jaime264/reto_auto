@@ -1,37 +1,27 @@
-import { Page, expect } from '@playwright/test';
+import { Page } from '@playwright/test';
 import { Product } from '../models/Product';
-import { parsePrice } from '../utils/parsePrice';
-
+import { ProductName } from '../questions/ProductName';
+import { ProductPrice } from '../questions/ProductPrice';
+import { AvailableQuantity } from '../questions/AvailableQuantity';
+import { FinalCartQuantity } from '../questions/FinalCartQuantity';
 
 export class AddRandomQuantityToCart {
   static async performAs(page: Page): Promise<Product> {
-
+    // Cerrar modal de recomendaciones si aparece
     const drawer = page.locator('#drawer');
     if (await drawer.isVisible({ timeout: 3000 }).catch(() => false)) {
-      console.log('🛍️ Modal de recomendación detectado');
-
       const closeDrawerBtn = drawer.locator('[data-fs-drawer-close-button="true"]');
-
       if (await closeDrawerBtn.isVisible({ timeout: 3000 }).catch(() => false)) {
         await closeDrawerBtn.dispatchEvent('click');
-         // ← Sí se puede hacer clic, aunque sea un <span>
         console.log('❌ Modal de recomendación cerrado');
       }
     }
 
+    // Obtener nombre y precio (Questions)
+    const name = await ProductName.answeredBy(page);
+    const price = await ProductPrice.answeredBy(page);
 
-    // Capturar nombre del producto
-    const nameLocator = page.locator('header[data-fs-product-details-title="true"] h1:visible').first();
-
-    await expect(nameLocator).toBeVisible({ timeout: 10000 });
-    const name = (await nameLocator.textContent())?.trim() ?? 'Nombre no disponible';
-
-    // Capturar precio y convertirlo a number
-    const priceLocator = page.locator('[data-fs-container-price-otros]');
-    const priceText = (await priceLocator.first().textContent()) ?? '$0';
-    const price = parsePrice(priceText);
-
-    // Hacer clic en "Agregar al carrito"
+    // Agregar producto al carrito
     const addButton = page.locator('#container-buybutton button span', { hasText: 'Agregar' });
     await addButton.first().click();
 
@@ -44,7 +34,7 @@ export class AddRandomQuantityToCart {
       }
     }
 
-     // Validar si aparece la talla máxima disponible
+    // Seleccionar talla si aparece
     const dropdown = page.locator('[data-fs-content-size-selector=true]');
     if (await dropdown.isVisible({ timeout: 3000 }).catch(() => false)) {
       await dropdown.click();
@@ -52,38 +42,21 @@ export class AddRandomQuantityToCart {
       await firstOption.click();
     }
 
-    // Validar si aparece la cantidad máxima disponible
-    let maxQuantity = 10;
-    const quantitySpan = page.locator('[data-fs-product-details-seller__name="true"]');
-    if (await quantitySpan.isVisible({ timeout: 3000 }).catch(() => false)) {
-      const quantityText = await quantitySpan.innerText();
-      const availableQuantity = parseInt(quantityText.trim());
-      if (!isNaN(availableQuantity) && availableQuantity < 10) {
-        maxQuantity = availableQuantity;
-      }
-    }
+    // Obtener cantidad máxima disponible
+    const maxQuantity = await AvailableQuantity.answeredBy(page);
 
-    // Generar cantidad aleatoria y asignarla
+    // Generar cantidad aleatoria y aumentar producto
     let quantity = Math.floor(Math.random() * maxQuantity) + 1;
     const plusButton = page.locator('#container-buybutton').locator('button:has(use[href*="icon-outlined-more_mas_agregar_selector"])');
+
     for (let i = 1; i < quantity; i++) {
       await plusButton.click();
-      await page.waitForTimeout(200); // evitar click demasiado rápido
+      await page.waitForTimeout(200);
     }
 
-    
-    // 3. Obtener valor final desde el input visible
-    const quantityInput = page.locator('[data-fs-container-buybutton="true"] input');
-    const inputValue = await quantityInput.inputValue();
+    // Obtener cantidad final real del input
+    quantity = await FinalCartQuantity.answeredBy(page);
 
-    // 4. Asignar valor exacto como número
-    quantity = parseInt(inputValue.trim(), 10);
-
-
-    return {
-      name,
-      price,
-      quantity
-    };
+    return { name, price, quantity };
   }
 }

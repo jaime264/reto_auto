@@ -1,7 +1,8 @@
 import { Page, expect } from '@playwright/test';
+import { IsProductNotFound } from '../questions/IsProductNotFound';
 
 export class SelectRandomProduct {
-  static async performAs(page: Page): Promise<boolean> {
+  static async performAs(page: Page): Promise<boolean | null> {
     // Este selector apunta a los <a> que redirigen a la página del producto desde la grilla
     const products = page.locator('[data-fs-product-grid] a[data-testid="product-link"]:visible');
 
@@ -20,8 +21,8 @@ export class SelectRandomProduct {
     await selected.click();
 
     // Verificar si aparece el error 404
-    const notFound = page.locator('[data-fs-info-not-found="true"]');
-    if (await notFound.isVisible({ timeout: 3000 }).catch(() => false)) {
+    const notFound = await IsProductNotFound.answeredBy(page);
+    if (notFound) {
       console.warn('⚠️ Producto no disponible (404). Se omite.');
       return false;
     }
