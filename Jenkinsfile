@@ -6,9 +6,7 @@ pipeline {
     }
 
     environment {
-        REPORT_DIR = "reports"
-        VIDEO_DIR = "reports/videos"
-        SCREENSHOT_DIR = "reports/screenshots"
+        REPORT_DIR = "playwright-report"
     }
 
     stages {
@@ -25,9 +23,16 @@ pipeline {
             }
         }
 
-        stage('Generar Artefactos') {
+        stage('Publicar Reporte') {
             steps {
-                archiveArtifacts artifacts: 'reports/**', allowEmptyArchive: true
+                publishHTML(target: [
+                    allowMissing: true,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: "${REPORT_DIR}",
+                    reportFiles: 'index.html',
+                    reportName: 'Playwright Report'
+                ])
             }
         }
 
@@ -40,7 +45,7 @@ pipeline {
 
     post {
         always {
-            archiveArtifacts artifacts: 'reports/**/*.html, reports/**/*.mp4, reports/**/*.png', allowEmptyArchive: true
+            archiveArtifacts artifacts: 'playwright-report/**/*.html, reports/**/*.mp4, reports/**/*.png', allowEmptyArchive: true
         }
     }
 }
