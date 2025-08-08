@@ -1,10 +1,12 @@
 pipeline {
     agent any
 
+    tools {
+        nodejs 'node22' // 👈 Este nombre debe coincidir con lo que tienes en "Global Tool Configuration"
+    }
+
     environment {
-        NODE_HOME = tool name: 'NodeJS', type: 'jenkins.plugins.nodejs.tools.NodeJSInstallation'
-        PATH = "${NODE_HOME}/bin:${env.PATH}"
-        REPORT_DIR = 'playwright-report'
+        REPORT_DIR = "playwright-report"
     }
 
     stages {
@@ -20,9 +22,9 @@ pipeline {
                 echo '🧪 Ejecutando pruebas...'
                 script {
                     try {
-                        sh 'npx playwright test'
+                        sh 'npx playwright test --reporter=html'
                     } catch (err) {
-                        currentBuild.result = 'UNSTABLE' // o FAILURE si prefieres
+                        currentBuild.result = 'UNSTABLE' // o 'FAILURE'
                         echo "⚠️ Pruebas fallidas, pero continuamos con el pipeline."
                     }
                 }
@@ -49,7 +51,7 @@ pipeline {
             echo '🧹 Limpiando workspace...'
             script {
                 try {
-                    cleanWs() // Asegúrate de que el plugin "Workspace Cleanup" esté instalado
+                    cleanWs() // Requiere plugin Workspace Cleanup
                 } catch (e) {
                     echo '⚠️ No se pudo limpiar workspace: cleanWs() no disponible.'
                 }
