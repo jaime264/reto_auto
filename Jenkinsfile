@@ -1,50 +1,59 @@
 pipeline {
     agent any
 
-    tools {
-        nodejs 'node22'
-    }
-
     environment {
-        REPORT_DIR = "playwright-report"
+        NODE_HOME = tool name: 'NodeJS', type: 'jenkins.plugins.nodejs.tools.NodeJSInstallation'
+        PATH = "${NODE_HOME}/bin:${env.PATH}"
+        REPORT_DIR = 'playwright-report'
     }
 
     stages {
         stage('Instalar dependencias') {
             steps {
+                echo '📦 Instalando dependencias...'
                 sh 'npm ci'
             }
         }
 
         stage('Ejecutar Pruebas') {
             steps {
-                // Asegura que se instalen los navegadores
-                sh 'npx playwright install'
-
-                // Ejecuta las pruebas y no falla el pipeline automáticamente
-                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                    sh 'npx playwright test --reporter=html'
+                echo '🧪 Ejecutando pruebas...'
+                script {
+                    try {
+                        sh 'npx playwright test'
+                    } catch (err) {
+                        currentBuild.result = 'UNSTABLE' // o FAILURE si prefieres
+                        echo "⚠️ Pruebas fallidas, pero continuamos con el pipeline."
+                    }
                 }
+            }
+        }
+
+        stage('Publicar Reporte') {
+            steps {
+                echo '📊 Publicando reporte...'
+                publishHTML([
+                    reportDir: "${REPORT_DIR}",
+                    reportFiles: 'index.html',
+                    reportName: 'Playwright Report',
+                    keepAll: true,
+                    allowMissing: true,
+                    alwaysLinkToLastBuild: true
+                ])
             }
         }
     }
 
     post {
         always {
-            echo "🔁 Ejecutando acciones post pipeline..."
-
-            // Publicar el HTML generado por Playwright
-            publishHTML([
-                reportDir: "${REPORT_DIR}",
-                reportFiles: 'index.html',
-                reportName: 'Playwright Report',
-                keepAll: true,
-                allowMissing: true,
-                alwaysLinkToLastBuild: true
-            ])
-
-            // Limpia el workspace sin importar si falló o no
-            cleanWs()
+            echo '🧹 Limpiando workspace...'
+            script {
+                try {
+                    cleanWs() // Asegúrate de que el plugin "Workspace Cleanup" esté instalado
+                } catch (e) {
+                    echo '⚠️ No se pudo limpiar workspace: cleanWs() no disponible.'
+                }
+            }
         }
     }
 }

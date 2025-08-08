@@ -12,7 +12,7 @@ import { ValidateCart } from '../screenplay/tasks/ValidateCart';
 import { clearSession } from '../screenplay/utils/clearSession';
 import { Product } from '../screenplay/models/Product';
 import { HasVisibleProducts } from '../screenplay/questions/HasVisibleProducts';
-import { Safe } from '../screenplay/utils/safe';
+import { Safe } from '../screenplay/utils/Safe';
 
 test('Agregar 5 productos aleatorios al carrito', async ({ page }) => {
   const shopper = new Shopper(page);
