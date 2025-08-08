@@ -15,7 +15,7 @@ import { HasVisibleProducts } from '../screenplay/questions/HasVisibleProducts';
 import { secure } from '../screenplay/utils/secure';
 
 test('Agregar 5 productos aleatorios al carrito', async ({ page }) => {
-  test.setTimeout(240_000);
+  test.setTimeout(8 * 60 * 1000); // 6 minutos
 
   const shopper = new Shopper(page);
   await page.goto('https://www.exito.com/');
