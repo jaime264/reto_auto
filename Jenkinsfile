@@ -23,7 +23,6 @@ pipeline {
                 script {
                     try {
                         sh 'npx playwright test --reporter=html'
-                        sh 'npx playwright show-report --output=playwright-report --quiet'
                     } catch (err) {
                         currentBuild.result = 'UNSTABLE' // o 'FAILURE'
                         echo "⚠️ Pruebas fallidas, pero continuamos con el pipeline."
