@@ -21,7 +21,7 @@ export class AcceptCookies {
       }
 
       // Esperar a que ya no intercepte clicks
-      await cookiesModal.first().waitFor({ state: 'hidden', timeout: 10000 }).catch(() => {});
+      await cookiesModal.first().waitFor({ state: 'hidden', timeout: 3000 }).catch(() => {});
     }
   }
 }

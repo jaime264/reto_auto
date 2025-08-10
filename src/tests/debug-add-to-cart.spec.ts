@@ -15,7 +15,7 @@ import { HasVisibleProducts } from '../screenplay/questions/HasVisibleProducts';
 import { secure } from '../screenplay/utils/secure';
 
 test('Agregar 5 productos aleatorios al carrito', async ({ page }) => {
-  test.setTimeout(15 * 60 * 1000); // 6 minutos
+  test.setTimeout(20 * 60 * 1000); 
 
   const shopper = new Shopper(page);
   await page.goto('https://www.exito.com/');
@@ -60,7 +60,7 @@ test('Agregar 5 productos aleatorios al carrito', async ({ page }) => {
 }
 
   await shopper.attemptsTo(GoToCart);
-  await page.waitForTimeout(50000);
+  await page.waitForTimeout(5000);
   await secure.attempt(() => ValidateCart.performAs(page, addedProducts), 'Validar carrito', page);
 
 });

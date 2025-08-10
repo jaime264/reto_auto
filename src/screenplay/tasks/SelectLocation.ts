@@ -9,7 +9,7 @@ export class SelectLocation {
     
     // ▼ Esperar a que aparezca el modal
     const storeModal = page.locator('[data-testid="store-modal"]');
-    await storeModal.waitFor({ state: 'visible', timeout: 10000 });
+    await storeModal.waitFor({ state: 'visible', timeout: 5000 });
     await page.waitForTimeout(1000); // esperar que el modal termine de aparecer
 
     // ▼ Seleccionar ciudad
@@ -17,17 +17,17 @@ export class SelectLocation {
     await cityDropdown.click();
 
     const firstCityOption = page.locator('[id^="react-select-2-listbox"] [role="option"]').first();
-    await firstCityOption.waitFor({ state: 'visible', timeout: 15000 });
+    await firstCityOption.waitFor({ state: 'visible', timeout: 5000 });
     await firstCityOption.click();
 
-    await page.waitForTimeout(1000); // esperar a que se habilite el segundo select
+    await page.waitForTimeout(5000); // esperar a que se habilite el segundo select
 
     // ▼ Seleccionar tienda
     const storeDropdown = storeModal.locator('[data-fs-pickup-point-city-select-dependency="true"]');
     await storeDropdown.click();
 
     const firstStoreOption = page.locator('[id^="react-select-3-listbox"] [role="option"]').first();
-    await firstStoreOption.waitFor({ state: 'visible', timeout: 15000 });
+    await firstStoreOption.waitFor({ state: 'visible', timeout: 5000 });
     await firstStoreOption.click();
 
     // ▼ Confirmar selección

@@ -35,6 +35,6 @@ export const SelectRandomCategory = {
     const subMenu = page.locator(
       'div[class*="SubMenu_submenu-container"][data-isopen="true"] ul[data-content-list="true"]'
     );
-    await expect(subMenu.first()).toBeVisible({ timeout: 15000 });
+    await expect(subMenu.first()).toBeVisible({ timeout: 3000 });
   }
 };

@@ -7,7 +7,7 @@ export class SelectRandomProduct {
     const products = page.locator('[data-fs-product-grid] a[data-testid="product-link"]:visible');
 
     // Esperar que al menos un producto sea visible
-    await expect(products.first()).toBeVisible({ timeout: 30000 });
+    await expect(products.first()).toBeVisible({ timeout: 10000 });
 
     const count = await products.count();
     expect(count).toBeGreaterThan(0);
@@ -29,7 +29,7 @@ export class SelectRandomProduct {
 
     // Confirmar que se redirigió a la página del producto (esperar el botón de agregar)
     const buyButton = page.locator('#container-buybutton button:has-text("Agregar")');
-    await expect(buyButton.first()).toBeVisible({ timeout: 15000 });
+    await expect(buyButton.first()).toBeVisible({ timeout: 5000 });
 
 
     return true;
