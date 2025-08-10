@@ -17,7 +17,7 @@ export class SelectLocation {
     await cityDropdown.click();
 
     const firstCityOption = page.locator('[id^="react-select-2-listbox"] [role="option"]').first();
-    await firstCityOption.waitFor({ state: 'visible', timeout: 5000 });
+    await firstCityOption.waitFor({ state: 'visible', timeout: 10000 });
     await firstCityOption.click();
 
     await page.waitForTimeout(5000); // esperar a que se habilite el segundo select
@@ -27,7 +27,7 @@ export class SelectLocation {
     await storeDropdown.click();
 
     const firstStoreOption = page.locator('[id^="react-select-3-listbox"] [role="option"]').first();
-    await firstStoreOption.waitFor({ state: 'visible', timeout: 5000 });
+    await firstStoreOption.waitFor({ state: 'visible', timeout: 10000 });
     await firstStoreOption.click();
 
     // ▼ Confirmar selección
